@@ -3,11 +3,12 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const mongoose = require('mongoose')
+const passport = require('passport')
 
 const user = require('./routes/user')
 const config = require('./config/config')
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 const app = express()
 
 console.log(process.env.NODE_ENV)
@@ -26,11 +27,16 @@ mongoose.connection.on('error', (err) => {
 app.use(cors())
 // Middleware para parsear body de request
 app.use(bodyParser.json())
-
 app.use(express.static(path.join(__dirname, 'public')))
 
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
+
+require('./config/passport')(passport)
+
 // Redirección por ruta a controlador
-app.use('/user', user)
+app.use('/api/user', user)
 
 // Ruta inicial
 app.get('/', (req, res) => {
