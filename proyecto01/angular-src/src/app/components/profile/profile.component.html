@@ -1,3 +1,65 @@
-<p>
-  profile works!
-</p>
+<div *ngIf="user && !showDelete && !showEdit" style="margin-top: 30px;">
+  <div class="col s10 m6">
+    <div class="card horizontal z-index-3">
+      <div class="card-image">
+        <img src="http://www.dlit.ac.th/pages/user/avatar/avatar.jpg">
+      </div>
+      <div class="card-stacked">
+        <div class="card-content">
+          <span class="card-title">{{user.name}}</span>
+          <p class="grey-text lighten-3">{{user.username}} ({{user.email}})</p>
+          <div class="divider"></div><br>
+          <p>{{user.description}}</p>
+        </div>
+        <div class="card-action">
+          <div class="right">
+            <a (click)="showEdit = !showEdit"class="btn green waves-effect">
+              <i class="material-icons">mode_edit</i>
+            </a>
+            <a (click)="showDelete = !showDelete" class="btn red waves-effect">
+              <i class="material-icons">clear</i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showDelete" style="margin-top: 30px;">
+  <div class="col s10 m4">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">Delete account.</span>
+        <p>Are you sure you want to delete your account?</p>
+      </div>
+      <div class="card-action">
+        <a (click)="showDelete = !showDelete" class="btn-flat waves-effect">Cancel</a>
+        <a (click)="onDeleteConfirmed()" class="btn-flat waves-effect">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showEdit" style="margin-top: 30px;">
+  <div class="col s10 m6">
+    <form (submit)="onSubmitEdit()">
+      <div class="input-field">
+        <input type="text" [(ngModel)]="user.name" placeholder="Name" name="name">
+        <label class="active">Name</label>
+      </div>
+      <div class="input-field">
+        <input type="text" [(ngModel)]="user.email" placeholder="Email" name="email">
+        <label class="active">Email</label>
+      </div>
+      <div class="input-field">
+        <textarea [(ngModel)]="user.description" placeholder="Description" name="description" class="materialize-textarea"></textarea>
+        <label class="active">Description</label>
+      </div>
+      <div class="center">
+        <a (click)="showEdit = !showEdit" class="btn red waves-effect">Cancel</a>
+        <input type="submit" value="Save" class="btn amber darken-1 waves-effect">
+      </div>
+    </form>
+  </div>
+</div>

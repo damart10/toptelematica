@@ -34,19 +34,19 @@ export class RegisterComponent implements OnInit {
       email: this.email,
       password: this.password
     };
-    
+
     if (!this._validateService.validateRegister(user)) {
       this._flashMessagesService.show('Please fill all the fields.', { cssClass: 'card-panel red white-text' });
       return false;
     }
 
-    if(!this._validateService.validateEmail(user.email)) {
+    if (!this._validateService.validateEmail(user)) {
       this._flashMessagesService.show('Please enter a valid email.', { cssClass: 'card-panel red white-text' });
       return false;
     }
 
     this._userService.registerUser(user).subscribe(data => {
-      if(data.success) {
+      if (data.ok) {
         this._flashMessagesService.show(data.message, { cssClass: 'card-panel red white-text' });
         this.router.navigate(['login']);
       } else {

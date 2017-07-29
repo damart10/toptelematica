@@ -266,6 +266,10 @@ angular2-flash-messages@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/angular2-flash-messages/-/angular2-flash-messages-1.0.8.tgz#21e10833a8c044c1ea7c709480154949c2723463"
 
+angular2-jwt@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/angular2-jwt/-/angular2-jwt-0.2.3.tgz#54efdda3ceedba85f6a37b165f22ac22b8adf021"
+
 ansi-escapes@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-2.0.0.tgz#5bae52be424878dd9783e8910e3fc2922e83c81b"

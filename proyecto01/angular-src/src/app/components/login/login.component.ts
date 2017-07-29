@@ -31,16 +31,18 @@ export class LoginComponent implements OnInit {
       password: this.password
     };
 
-    if(!this._validateService.validateLogin(user)) {
+    if (!this._validateService.validateLogin(user)) {
       this._flashMessagesService.show('Please fill all the fields.', { cssClass: 'card-panel red white-text' });
       return false;
     }
 
     this._userService.authenticateUser(user).subscribe(data => {
-      if(data.succes) {
+      if (data.ok) {
+        this._userService.storeUserData(data.token, data.user);
         this.router.navigate(['dashboard']);
       } else {
         this._flashMessagesService.show(data.message, { cssClass: 'card-panel red white-text' });
+        this.router.navigate(['login']);
       }
     });
   }

@@ -1,10 +1,21 @@
 <nav>
   <div class="nav-wrapper indigo" style="padding-left: 15px; padding-right: 15px;">
-    <a [routerLink]="['/']" class="brand-logo" style="font-family: Kaushan Script;">
+    <a *ngIf="!_userService.loggedIn()" [routerLink]="['/']" class="brand-logo" style="font-family: Kaushan Script;">
+      <i class="large material-icons">dashboard</i>Midi</a>
+    <a *ngIf="_userService.loggedIn()" [routerLink]="['/dashboard']" class="brand-logo" style="font-family: Kaushan Script;">
       <i class="large material-icons">dashboard</i>Midi</a>
     <ul id="nav-mobile" class="right hide-on-med-and-down">
-      <li [routerLinkActive]="['active']"><a [routerLink]="['/login']">Login</a></li>
-      <li [routerLinkActive]="['active']"><a [routerLink]="['/register']">Register</a></li>
+      <li *ngIf="_userService.loggedIn()" [routerLinkActive]="['active']">
+        <a [routerLink]="['/dashboard']">Dashboard</a></li>
+      <li *ngIf="_userService.loggedIn()" [routerLinkActive]="['active']">
+        <a [routerLink]="['/profile']">Profile</a></li>
+
+      <li *ngIf="!_userService.loggedIn()" [routerLinkActive]="['active']">
+        <a [routerLink]="['/login']">Login</a></li>
+      <li *ngIf="!_userService.loggedIn()" [routerLinkActive]="['active']">
+        <a [routerLink]="['/register']">Register</a></li>
+
+      <li *ngIf="_userService.loggedIn()"><a (click)="onLogoutClick()" href="#">Logout</a></li>
     </ul>
   </div>
 </nav>
