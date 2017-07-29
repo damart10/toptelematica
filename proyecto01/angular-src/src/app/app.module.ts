@@ -17,6 +17,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 import { ValidateService } from './services/validate.service';
 import { UserService } from './services/user.service';
+import { ImageService } from './services/image.service';
 
 import { AuthGuard } from './guards/auth.guard';
 
@@ -50,6 +51,7 @@ const appRoutes: Routes = [
   providers: [
     UserService,
     ValidateService,
+    ImageService,
     AuthGuard
   ],
   bootstrap: [AppComponent]

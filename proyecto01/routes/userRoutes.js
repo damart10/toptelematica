@@ -32,6 +32,24 @@ router.post('/', (req, res) => {
   })
 })
 
+// Get all users
+router.get('/', (req, res) => {
+  User.find((err, users) => {
+    if (err) {
+      console.log(err)
+      res.json({
+        ok: false,
+        message: 'Failed to retrieving the users.'
+      })
+    } else {
+      res.json({
+        ok: true,
+        users: users
+      })
+    }
+  })
+})
+
 // Login
 router.post('/login', (req, res) => {
   let username = req.body.username
@@ -118,8 +136,7 @@ router.put('/:id', passport.authenticate('jwt', { session: false }), (req, res) 
 
 // Delete user
 router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
-  console.log(req.params)
-  User.findByIdAndRemove({_id: req.params.id}, (err, task) => {
+  User.findByIdAndRemove({_id: req.params.id}, (err, user) => {
     if (err){
       console.log(err)
       res.json({
@@ -129,7 +146,7 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, re
     }
     res.json({ 
       ok: true,
-      message: 'User okfully deleted' 
+      message: 'User deleted successfully' 
     })
   })
 })

@@ -3,11 +3,14 @@ import { Http, Headers } from '@angular/http';
 import { tokenNotExpired } from 'angular2-jwt';
 import 'rxjs/add/operator/map';
 
+import { environment }  from './../../environments/environment';
+
 @Injectable()
 export class UserService {
 
   authToken: any;
   user: any;
+  basePath: any;
 
   constructor(private _http: Http) { }
 
@@ -16,7 +19,7 @@ export class UserService {
 
     headers.append('Content-Type', 'application/json');
 
-    return this._http.post('http://localhost:3000/api/users/', user, { headers: headers })
+    return this._http.post(environment.apiUrl + 'users', user, { headers: headers })
       .map(res => res.json());
   }
 
@@ -25,7 +28,7 @@ export class UserService {
 
     headers.append('Content-Type', 'application/json');
 
-    return this._http.post('http://localhost:3000/api/users/login', user, { headers: headers })
+    return this._http.post(environment.apiUrl + 'users/login', user, { headers: headers })
       .map(res => res.json());
   }
 
@@ -36,7 +39,7 @@ export class UserService {
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', this.authToken);
 
-    return this._http.get('http://localhost:3000/api/users/login', { headers: headers })
+    return this._http.get(environment.apiUrl + 'users/login', { headers: headers })
       .map(res => res.json());
   }
 
@@ -53,7 +56,7 @@ export class UserService {
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', this.authToken);
 
-    return this._http.delete('http://localhost:3000/api/users/' + user.id, { headers: headers })
+    return this._http.delete(environment.apiUrl + '/users/' + user.id, { headers: headers })
       .map(res => res.json());
   }
 
@@ -63,7 +66,7 @@ export class UserService {
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', this.authToken);
 
-    return this._http.put('http://localhost:3000/api/users/' + user.id, user, { headers: headers })
+    return this._http.put(environment.apiUrl + '/users/' + user.id, user, { headers: headers })
       .map(res => res.json());
   }
 

@@ -8,8 +8,7 @@
       "root": "src",
       "outDir": "../public",
       "assets": [
-        "assets",
-        "favicon.ico"
+        "assets"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -22,10 +21,10 @@
         "styles.css"
       ],
       "scripts": [],
-      "environmentSource": "environments/environment.ts",
+      "environmentSource": "src/environments/environment.ts",
       "environments": {
-        "dev": "environments/environment.ts",
-        "prod": "environments/environment.prod.ts"
+        "dev": "src/environments/environment.ts",
+        "prod": "src/environments/environment.prod.ts"
       }
     }
   ],

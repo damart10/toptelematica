@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 const passport = require('passport')
 
 const users = require('./routes/userRoutes')
-//const images = require('./routes/imagesRoutes')
+const images = require('./routes/imagesRoutes')
 const config = require('./config/config')
 
 const PORT = process.env.PORT || 3000;
@@ -38,7 +38,7 @@ require('./config/passport')(passport)
 
 // Redirección por ruta a controlador
 app.use('/api/users', users)
-//app.use('/api/images', images)
+app.use('/api/images', images)
 
 // Ruta inicial
 app.get('/', (req, res) => {

@@ -1,3 +1,59 @@
-<p>
-  dashboard works!
-</p>
+<div *ngIf="!showAdd" class="row">
+  <div class="col s12" style="margin-top: 30px;">
+    <div class="col s10 m6">
+      <div *ngFor="let image of images1" class="card medium hoverable">
+        <div class="card-image">
+          <img src={{image.url}}>
+          <!-- <span class="card-title">Card Title</span> -->
+        </div>
+        <div class="card-content">
+          <p>{{image.description}}</p>
+        </div>
+        <div class="card-action">
+          <!-- <a href="#">This is a link</a> -->
+        </div>
+      </div>
+    </div>
+    <div class="col s10 m6">
+      <div *ngFor="let image of images2" class="card medium hoverable">
+        <div class="card-image">
+          <img src={{image.url}}>
+          <!-- <span class="card-title">Card Title</span> -->
+        </div>
+        <div class="card-content">
+          <p>{{image.description}}</p>
+        </div>
+        <div class="card-action">
+          <!-- <a href="#">This is a link</a> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showAdd" class="row">
+  <div class="col s10 m8 offset-m2">
+    <form (submit)="onSubmitAdd()">
+      <div class="input-field">
+        <input type="text" [(ngModel)]="img.name" name="name">
+        <label>Name</label>
+      </div>
+      <div class="input-field">
+        <input type="text" [(ngModel)]="img.url" name="url">
+        <label>Url</label>
+      </div>
+      <div class="input-field">
+        <textarea [(ngModel)]="img.description" name="description" class="materialize-textarea"></textarea>
+        <label>Description</label>
+      </div>
+      <div class="center">
+        <a (click)="showAdd = !showAdd" class="btn red waves-effect">Cancel</a>
+        <input type="submit" value="Create" class="btn amber darken-1 waves-effect">
+      </div>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="!showAdd" class="fixed-action-btn">
+  <a (click)="showAdd = !showAdd" class="btn-floating btn-large waves-effect red"><i class="material-icons">add</i></a>
+</div>
