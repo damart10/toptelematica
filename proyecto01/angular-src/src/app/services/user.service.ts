@@ -56,7 +56,7 @@ export class UserService {
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', this.authToken);
 
-    return this._http.delete(environment.apiUrl + '/users/' + user.id, { headers: headers })
+    return this._http.delete(environment.apiUrl + 'users/' + user.id, { headers: headers })
       .map(res => res.json());
   }
 
@@ -66,7 +66,7 @@ export class UserService {
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', this.authToken);
 
-    return this._http.put(environment.apiUrl + '/users/' + user.id, user, { headers: headers })
+    return this._http.put(environment.apiUrl + 'users/' + user.id, user, { headers: headers })
       .map(res => res.json());
   }
 

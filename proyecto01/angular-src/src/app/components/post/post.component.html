@@ -1,3 +1,61 @@
-<p>
-  post works!
-</p>
+<div *ngIf="image && !showDelete && !showEdit" style="margin-top: 30px;">
+  <div class="col s10 m6">
+    <div class="card horizontal z-index-3">
+      <div class="card-image">
+        <img src={{image.url}}>
+      </div>
+      <div class="card-stacked">
+        <div class="card-content">
+          <button (click)="goBack()" class="secondary-content btn-flat waves-effect"><i class="material-icons grey-text lighten-3">clear</i></button>
+          <span class="card-title">{{image.name}}</span>
+          <p class="grey-text lighten-3">{{image.owner.username}}</p>
+          <p>{{image.description}}</p>
+        </div>
+        <div *ngIf="showOptions" class="card-action">
+          <div class="right">
+            <a (click)="showEdit = !showEdit"class="btn green waves-effect">
+              <i class="material-icons">mode_edit</i>
+            </a>
+            <a (click)="showDelete = !showDelete" class="btn red waves-effect">
+              <i class="material-icons">clear</i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+ <div *ngIf="showDelete" style="margin-top: 30px;">
+  <div class="col s10 m4">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">Delete picture.</span>
+        <p>Are you sure you want to delete this picture?</p>
+      </div>
+      <div class="card-action">
+        <a (click)="showDelete = !showDelete" class="btn-flat waves-effect">Cancel</a>
+        <a (click)="onDeleteConfirmed()" class="btn-flat waves-effect">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showEdit" style="margin-top: 30px;">
+  <div class="col s10 m6">
+    <form (submit)="onSubmitEdit()">
+      <div class="input-field">
+        <input type="text" [(ngModel)]="image.name" placeholder="Name" name="name">
+        <label class="active">Name</label>
+      </div>
+      <div class="input-field">
+        <textarea [(ngModel)]="image.description" placeholder="Description" name="description" class="materialize-textarea"></textarea>
+        <label class="active">Description</label>
+      </div>
+      <div class="center">
+        <a (click)="showEdit = !showEdit" class="btn red waves-effect">Cancel</a>
+        <input type="submit" value="Save" class="btn amber darken-1 waves-effect">
+      </div>
+    </form>
+  </div>
+</div>

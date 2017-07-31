@@ -125,12 +125,13 @@ router.put('/:id', passport.authenticate('jwt', { session: false }), (req, res) 
         ok: false,
         message: 'There was an error trying to update.' 
       })
-    } 
-    res.json({
-      ok: true,
-      message: 'User updated successfully',
-      user: user
-    })
+    } else {
+      res.json({
+        ok: true,
+        message: 'User updated successfully',
+        user: user
+      })
+    }
   })
 })
 
@@ -143,11 +144,12 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, re
         ok: false,
         message: 'There was a error trying to delete the user.'
       })
+    } else {
+      res.json({ 
+        ok: true,
+        message: 'User deleted successfully' 
+      })
     }
-    res.json({ 
-      ok: true,
-      message: 'User deleted successfully' 
-    })
   })
 })
 

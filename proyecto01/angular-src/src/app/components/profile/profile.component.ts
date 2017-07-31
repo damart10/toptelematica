@@ -56,7 +56,7 @@ export class ProfileComponent implements OnInit {
   }
 
   onSubmitEdit() {
-    if (!this._validateService.validateEdit(this.user)) {
+    if (!this._validateService.validateEditProfile(this.user)) {
       this._flashMessagesService.show('Please fill in all the fields.', { cssClass: 'card-panel red white-text' });
       return false;
     }

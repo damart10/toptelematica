@@ -61,7 +61,7 @@ router.get('/:id', (req, res) => {
 
 // Update image
 router.put('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Image.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, (req, res) => {
+  Image.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, (err, image) => {
     if (err) {
       console.log(err)
       res.json({

@@ -4,7 +4,6 @@ import { FlashMessagesService } from 'angular2-flash-messages';
 
 import { ImageService } from './../../services/image.service';
 import { ValidateService } from './../../services/validate.service';
-import { UserService } from './../../services/user.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,8 +23,7 @@ export class DashboardComponent implements OnInit {
     private router: Router,
     private _flashMessagesService: FlashMessagesService,
     private _imageService: ImageService,
-    private _validateService: ValidateService,
-    private _userService: UserService
+    private _validateService: ValidateService
   ) { }
 
   ngOnInit() {
@@ -62,7 +60,7 @@ export class DashboardComponent implements OnInit {
       sharedWith: this.img.sharedWith
     }
 
-    if (!this._validateService.validateEdit(newImage)) {
+    if (!this._validateService.validatePost(newImage)) {
       this._flashMessagesService.show('Please fill in all the fields.', { cssClass: 'card-panel red white-text' });
       return false;
     }

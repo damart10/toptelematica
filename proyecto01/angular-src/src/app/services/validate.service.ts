@@ -22,8 +22,24 @@ export class ValidateService {
     }
   }
 
-  validateEdit(user) {
+  validateEditProfile(user) {
     if (user.name == '' || user.password == '' || user.email == '') {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  validatePost(image) {
+    if (image.name == '' || image.url == '') {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  validateEditPost(image) {
+    if (image.name == '') {
       return false;
     } else {
       return true;
