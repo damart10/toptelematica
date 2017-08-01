@@ -9,10 +9,8 @@ const users = require('./routes/userRoutes')
 const images = require('./routes/imagesRoutes')
 const config = require('./config/config')
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 const app = express()
-
-console.log(process.env.NODE_ENV)
 
 mongoose.connect(config.database, config.options)
 
@@ -50,6 +48,6 @@ app.get('*', (req, res) => {
 })
 
 // Iniciar servidor
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log("Server started on port:", PORT)
 })
