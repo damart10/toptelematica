@@ -1,7 +1,6 @@
 # Proyecto 1
-Esta va a ser la documentación cuando termine de hacer lo otro :v
 
-# Planteamiento del proyecto.
+## Planteamiento del proyecto.
 
 ## 1. Descripción
 
