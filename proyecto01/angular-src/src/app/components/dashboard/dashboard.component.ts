@@ -13,11 +13,15 @@ import { ValidateService } from './../../services/validate.service';
 export class DashboardComponent implements OnInit {
 
   img: Image;
+  images: Object[];
   images1: Object[];
   images2: Object[];
 
   owner: Object;
   showAdd: Boolean;
+  showSearch: Boolean;
+
+  search: any;
 
   constructor(
     private router: Router,
@@ -28,12 +32,12 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this._imageService.getImages().subscribe(data => {
-      let amountPerCol = Math.ceil(data.images.length / 2);
+      this.images = data.images;
 
-      this.images1 = data.images.slice(0, amountPerCol);
-      this.images2 = data.images.slice(amountPerCol, data.images.length);
+      this.distributeImages();
 
       this.showAdd = false;
+      this.showSearch = false;
       this.img = {
         url: '',
         name: '',
@@ -73,6 +77,27 @@ export class DashboardComponent implements OnInit {
         this._flashMessagesService.show(data.message, { cssClass: 'card-panel red white-text' });
       }
     }, e => console.log(e));
+  }
+
+  onSubmitSearch() {
+    this._imageService.searchImage(this.search).subscribe(data => {
+      if (data.ok && data.images.length != 0) {
+        this.images = data.images;
+        this.distributeImages();
+        this.showSearch = false;
+        this.search = '';
+      } else {
+        this._flashMessagesService.show('No results found.', { cssClass: 'card-panel red white-text' });
+        this.showSearch = false;
+      }
+    })
+  }
+
+  distributeImages() {
+    let amountPerCol = Math.ceil(this.images.length / 2);
+
+    this.images1 = this.images.slice(0, amountPerCol);
+    this.images2 = this.images.slice(amountPerCol, this.images.length);
   }
 
 }

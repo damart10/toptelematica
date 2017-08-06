@@ -41,7 +41,7 @@ router.get('/', (req, res) => {
   })
 })
 
-// Get single image
+// Get single image by id
 router.get('/:id', (req, res) => {
   Image.findById(req.params.id, (err, image) => {
     if (err) {
@@ -54,6 +54,24 @@ router.get('/:id', (req, res) => {
       res.json({
         ok: true,
         image: image
+      })
+    }
+  })
+})
+
+// Search for specific image
+router.get('/searchImage/:name', (req, res) => {
+  Image.find({name: new RegExp(req.params.name)}, (err, images) => {
+    if (err) {
+      console.log(err)
+      res.json({
+        ok: false,
+        message: 'No images where found'
+      })
+    } else {
+      res.json({
+        ok: true,
+        images: images
       })
     }
   })

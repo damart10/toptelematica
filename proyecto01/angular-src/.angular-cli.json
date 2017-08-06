@@ -23,7 +23,8 @@
       "scripts": [],
       "environmentSource": "src/environments/environment.ts",
       "environments": {
-        "dev": "src/environments/environment.ts"
+        "dev": "src/environments/environment.dev.ts",
+        "prod": "src/environments/environment.prod.ts"
       }
     }
   ],

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 import { environment }  from './../../environments/environment';
@@ -55,6 +55,15 @@ export class ImageService {
     headers.append('Authorization', this.authToken);
 
     return this._http.delete(environment.apiUrl + 'images/' + image._id, { headers: headers })
+      .map(res => res.json());
+  }
+
+  searchImage(image) {
+    const headers = new Headers();
+
+    headers.append('Content-Type', 'application/json');
+
+    return this._http.get(environment.apiUrl + 'images/searchImage/' + image , { headers: headers })
       .map(res => res.json());
   }
 

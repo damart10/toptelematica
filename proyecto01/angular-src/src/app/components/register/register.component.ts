@@ -47,10 +47,10 @@ export class RegisterComponent implements OnInit {
 
     this._userService.registerUser(user).subscribe(data => {
       if (data.ok) {
-        this._flashMessagesService.show(data.message, { cssClass: 'card-panel red white-text' });
+        this._flashMessagesService.show(data.message, { cssClass: 'card-panel green white-text' });
         this.router.navigate(['login']);
       } else {
-        this._flashMessagesService.show(data.message, { cssClass: 'card-panel green white-text' });
+        this._flashMessagesService.show(data.message, { cssClass: 'card-panel red white-text' });
       }
     });
   }
