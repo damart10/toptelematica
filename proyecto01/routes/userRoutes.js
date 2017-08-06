@@ -32,24 +32,6 @@ router.post('/', (req, res) => {
   })
 })
 
-// Get all users
-router.get('/', (req, res) => {
-  User.find((err, users) => {
-    if (err) {
-      console.log(err)
-      res.json({
-        ok: false,
-        message: 'Failed to retrieving the users.'
-      })
-    } else {
-      res.json({
-        ok: true,
-        users: users
-      })
-    }
-  })
-})
-
 // Login
 router.post('/login', (req, res) => {
   let username = req.body.username
