@@ -53,16 +53,15 @@ if __name__ == "__main__":
                 'vector': Counter(stemmed_file)
             }))
 
-    files_similarities = []
+    files_similarities = {}
     for i in range(len(counted_files)):
+        distances = {}
         for j in range(i + 1, len(counted_files)):
             similarity = get_cosine(
                 counted_files[i]['vector'], counted_files[j]['vector'])
-            files_similarities.append(dict({
-                'file1': counted_files[i]['file'],
-                'file2': counted_files[j]['file'],
-                'similarity': similarity
-            }))
+            distances.update({counted_files[j]['file']: similarity})
+
+        files_similarities.update({counted_files[i]['file']: distances})
 
     print(len(files_similarities))
     print(files_similarities)
