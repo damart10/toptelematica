@@ -31,7 +31,7 @@ def getDis(text1, text2):
         return files_similarities[text2][text1]
 
 
-if __name__ == "__main__":
+def collectAndCleanText():
     # Conseguir el path donde se encuentran los papers a analizar
     dir_path = os.path.dirname(os.path.realpath(__file__))
     dir_papers = dir_path + '/articles'
@@ -71,5 +71,7 @@ if __name__ == "__main__":
 
         files_similarities.update({counted_files[i]['file']: distances})
 
+if __name__ == "__main__":
+    collectAndCleanText()
     print(len(files_similarities))
     print(files_similarities)
