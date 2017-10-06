@@ -8,6 +8,8 @@ from collections import Counter
 from nltk.stem import SnowballStemmer
 
 
+files_similarities = {}
+
 def get_cosine(vec1, vec2):
     intersection = set(vec1.keys()) & set(vec2.keys())
     numerator = sum([vec1[x] * vec2[x] for x in intersection])
@@ -19,7 +21,14 @@ def get_cosine(vec1, vec2):
     if not denominator:
         return 0.0
     else:
-        return float(numerator) / denominator
+        return 1 - (float(numerator) / denominator)
+
+
+def getDis(text1, text2):
+    if(text2 in files_similarities[text1]):
+        return files_similarities[text1][text2]
+    else:
+        return files_similarities[text2][text1]
 
 
 if __name__ == "__main__":
@@ -53,7 +62,6 @@ if __name__ == "__main__":
                 'vector': Counter(stemmed_file)
             }))
 
-    files_similarities = {}
     for i in range(len(counted_files)):
         distances = {}
         for j in range(i + 1, len(counted_files)):
