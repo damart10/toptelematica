@@ -8,7 +8,9 @@ from collections import Counter
 from nltk.stem import SnowballStemmer
 
 
-files_similarities = {}
+FILES_SIMILARITIES = dict()
+FILES_PATH = list()
+
 
 def get_cosine(vec1, vec2):
     intersection = set(vec1.keys()) & set(vec2.keys())
@@ -25,10 +27,10 @@ def get_cosine(vec1, vec2):
 
 
 def getDis(text1, text2):
-    if(text2 in files_similarities[text1]):
-        return files_similarities[text1][text2]
+    if(text2 in FILES_SIMILARITIES[text1]):
+        return FILES_SIMILARITIES[text1][text2]
     else:
-        return files_similarities[text2][text1]
+        return FILES_SIMILARITIES[text2][text1]
 
 
 def collectAndCleanText():
@@ -45,6 +47,8 @@ def collectAndCleanText():
 
     # Conseguir las direcciones de todos los artículos en la carpeta papers
     for root, dirs, filenames in os.walk(dir_papers):
+        global FILES_PATH
+        FILES_PATH += filenames
         file_paths = list(map(lambda x: dir_papers + '/' + x, filenames))
         for i, f in enumerate(file_paths):
             # Abrir archivo y conseguir contenido
@@ -69,9 +73,12 @@ def collectAndCleanText():
                 counted_files[i]['vector'], counted_files[j]['vector'])
             distances.update({counted_files[j]['file']: similarity})
 
-        files_similarities.update({counted_files[i]['file']: distances})
+        global FILES_SIMILARITIES
+        FILES_SIMILARITIES.update({counted_files[i]['file']: distances})
+
 
 if __name__ == "__main__":
     collectAndCleanText()
-    print(len(files_similarities))
-    print(files_similarities)
+    print(len(FILES_SIMILARITIES))
+    print(FILES_SIMILARITIES)
+    print(FILES_PATH)
