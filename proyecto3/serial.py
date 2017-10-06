@@ -36,8 +36,8 @@ if __name__ == "__main__":
 
     # Conseguir las direcciones de todos los artículos en la carpeta papers
     for root, dirs, filenames in os.walk(dir_papers):
-        filenames = list(map(lambda x: dir_papers + '/' + x, filenames))
-        for f in filenames:
+        file_paths = list(map(lambda x: dir_papers + '/' + x, filenames))
+        for i, f in enumerate(file_paths):
             # Abrir archivo y conseguir contenido
             file = open(f, encoding='utf-8').read()
             file_text = file.translate(cleaner).lower().strip().split()
@@ -49,7 +49,7 @@ if __name__ == "__main__":
                     cleaned_file))
 
             counted_files.append(dict({
-                'file': f,
+                'file': filenames[i],
                 'vector': Counter(stemmed_file)
             }))
 
