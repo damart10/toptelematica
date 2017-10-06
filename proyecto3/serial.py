@@ -22,11 +22,6 @@ def get_cosine(vec1, vec2):
         return float(numerator) / denominator
 
 
-def text_to_vector(text):
-    words = WORD.findall(text)
-    return Counter(words)
-
-
 if __name__ == "__main__":
     # Conseguir el path donde se encuentran los papers a analizar
     dir_path = os.path.dirname(os.path.realpath(__file__))
