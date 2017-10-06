@@ -6,7 +6,7 @@ import string
 import math
 from collections import Counter
 from nltk.stem import SnowballStemmer
-
+import random
 
 FILES_SIMILARITIES = dict()
 FILES_PATH = list()
@@ -68,7 +68,7 @@ def collectAndCleanText():
 
     for i in range(len(counted_files)):
         distances = {}
-        for j in range(i + 1, len(counted_files)):
+        for j in range(i+1, len(counted_files)):
             similarity = get_cosine(
                 counted_files[i]['vector'], counted_files[j]['vector'])
             distances.update({counted_files[j]['file']: similarity})
@@ -77,8 +77,30 @@ def collectAndCleanText():
         FILES_SIMILARITIES.update({counted_files[i]['file']: distances})
 
 
+def initClustering(k):
+    clusters = {}
+    initialCentroids = random.sample(FILES_PATH,k)
+    for i in range(len(FILES_PATH)):
+        closestDis = {'centroid':'','file':'', 'dis':1.0}
+        for j in range(len(initialCentroids)):
+            if(FILES_PATH[i] != initialCentroids[j]):
+                dis = getDis(initialCentroids[j], FILES_PATH[i])
+                if(dis < closestDis['dis']):
+                    closestDis['file'] = FILES_PATH[i]
+                    closestDis['dis'] = dis
+                    closestDis['centroid'] = initialCentroids[j]
+            else:
+                closestDis['file'] =FILES_PATH[i]
+                closestDis['dis'] = 0
+                closestDis['centroid'] = initialCentroids[j]
+        print(closestDis)
+        clusters[closestDis['centroid']]
+    print(clusters)        
+
+
 if __name__ == "__main__":
     collectAndCleanText()
-    print(len(FILES_SIMILARITIES))
-    print(FILES_SIMILARITIES)
-    print(FILES_PATH)
+    initClustering(2)
+    #print(len(FILES_SIMILARITIES))
+    #print(FILES_SIMILARITIES)
+    #print(FILES_PATH)
