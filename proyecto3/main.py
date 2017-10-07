@@ -3,10 +3,13 @@
 
 import os
 import string
+import math
 from collections import Counter
 
 from mpi4py import MPI
 from nltk.stem import SnowballStemmer
+from time import sleep
+
 
 
 COMM = MPI.COMM_WORLD
@@ -90,21 +93,36 @@ if __name__ == "__main__":
             'vector': Counter(stemmed_file)
         }))
 
-    print('Llegué aquí al pre gather')
-    print('Llegué aquí al gather')
+    files = COMM.gather(counted_files, root=0)
 
     if RANK == 0:
-        print('Entré a división')
-        files = COMM.gather(counted_files, root=0)
         counted_files = [item for sublist in files for item in sublist]
-        div_size = int(round(len(counted_files) / SIZE))
+        splitsize = 1.0 / SIZE * len(counted_files)
+        print(splitsize)
         for i in range(SIZE):
-            COMM.send((i * div_size, (i + 1) * div_size), dest=i)
-    else:
-        print('Entré a recibir index')
-        index = COMM.recv(source=0)
-        print(index)
+            indexStart = int(round(i * splitsize))
+            indexTop   = int(round((i + 1) * splitsize))
+            COMM.send((indexStart, indexTop), dest=i)
 
+    
+    index = COMM.recv(source=0)
+    print("Soy el procesadorciito", RANK, " ", index)
     files = COMM.bcast(counted_files, root=0)
+
+
+    files_similarities = dict()
+    for i in range(index[0], index[1]):
+        distances = {}
+        for j in range(i+1, len(files)):
+            similarity = get_cosine(files[i]['vector'], files[j]['vector'])
+            distances.update({files[j]['file']:similarity})
+        files_similarities.update({files[i]['file']:distances})
+    
+    list_all_files_similarites = COMM.gather(files_similarities, root=0)
+    if RANK == 0:
+        all_files_similarites = { }
+        for d in list_all_files_similarites:
+            all_files_similarites.update(d)
+        print(all_files_similarites)
     # counted_files = list(map(lambda f: Counter(f), stemmed_files))
     # print(counted_files)

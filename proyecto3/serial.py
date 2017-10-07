@@ -159,5 +159,6 @@ def k_means(k, max_iter):
 
 if __name__ == "__main__":
     collect_and_clean_text()
-    print(k_means(2, 20))
+    print(FILES_SIMILARITIES)
+    #print(k_means(2, 20))
     # get_cost(clusters)
