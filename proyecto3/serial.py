@@ -4,9 +4,12 @@
 import os
 import string
 import math
+import time
 from collections import Counter
 from nltk.stem import SnowballStemmer
 import random
+
+start_time = time.time()
 
 FILES_SIMILARITIES = dict()
 FILES_PATH = list()
@@ -139,26 +142,20 @@ def k_means(k, max_iter):
     clusters = get_clusters(initial_centroids)
     cost = get_cost_clusters(clusters)
     num_iter = 0
-    new_cost = 0
+    new_cost = cost
     new_clusters = clusters
-    while num_iter < max_iter:
-        if cost > new_cost:
-            clusters = new_clusters
-            for i in clusters:
-                new_centroids = []
-                new_centroids.append(calculate_new_centroid(clusters[i]))
-            new_clusters = get_clusters(new_centroids)
-            new_cost = get_cost_clusters(new_clusters)
-        else:
-            return clusters
-
+    while num_iter < max_iter and new_cost <= cost:
+        clusters = new_clusters
+        cost = new_cost
+        for i in clusters:
+            new_centroids = []
+            new_centroids.append(calculate_new_centroid(clusters[i]))
+        new_clusters = get_clusters(new_centroids)
+        new_cost = get_cost_clusters(new_clusters)
         num_iter += 1
-
-    print('Si llegué aquí, fallé. :V')
-
+    return clusters
 
 if __name__ == "__main__":
     collect_and_clean_text()
-    print(FILES_SIMILARITIES)
-    #print(k_means(2, 20))
-    # get_cost(clusters)
+    print(k_means(3, 100))
+    print("-------TIEMPO DE EJECUCION: %s SEGUNDOS -------" % (time.time()-start_time))

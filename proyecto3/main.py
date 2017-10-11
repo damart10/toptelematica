@@ -4,18 +4,21 @@
 import os
 import string
 import math
+import random
+import time 
 from collections import Counter
 
 from mpi4py import MPI
 from nltk.stem import SnowballStemmer
 
+start_time = time.time()
 
 COMM = MPI.COMM_WORLD
 RANK = COMM.Get_rank()
 SIZE = COMM.Get_size()
 
 FILES_SIMILARITIES = dict()
-FILES_PATH = dict()
+FILES_PATH = list()
 
 
 def get_cosine(vec1, vec2):
@@ -128,8 +131,8 @@ def collect_and_clean_text():
     if RANK == 0:
         all_files_similarites = {}
         for d in list_all_files_similarites:
-            all_files_similarites.update(d)
-        return all_files_similarites
+            global FILES_SIMILARITIES
+            FILES_SIMILARITIES.update(d)
 
 
 def get_clusters(centroids):
@@ -190,37 +193,30 @@ def calculate_new_centroid(cluster_files):
 
 
 def k_means(k, max_iter):
-    if RANK == 0:
-        filepaths = list()
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        dir_papers = dir_path + '/articles'
-        for root, dirs, filenames in os.walk(dir_papers):
-            filepaths += filenames
-
-        initial_centroids = random.sample(filepaths, k)
-        clusters = get_clusters(initial_centroids)
-        cost = get_cost_clusters()
-        num_iter = 0
-        new_cost = 0
-        new_clusters = clusters
-        while num_iter < max_iter:
-            if cost > new_cost:
-                clusters = new_clusters
-                for i in clusters:
-                    new_centroids = []
-                    new_centroids.append(calculate_new_centroid(clusters[i]))
-                new_clusters = get_clusters(new_centroids)
-                new_cost = get_cost_clusters(new_clusters)
-            else:
-                return clusters
-
-            num_iter += 1
-
-        print('Si llegué aquí, fallé. :V')
+    initial_centroids = random.sample(FILES_PATH, k)
+    clusters = get_clusters(initial_centroids)
+    cost = get_cost_clusters(clusters)
+    num_iter = 0
+    new_cost = cost
+    new_clusters = clusters
+    while num_iter < max_iter:
+        if cost >= new_cost:
+            clusters = new_clusters
+            cost = new_cost
+            for i in clusters:
+                new_centroids = []
+                new_centroids.append(calculate_new_centroid(clusters[i]))
+            new_clusters = get_clusters(new_centroids)
+            new_cost = get_cost_clusters(new_clusters)
+        else:
+            print(num_iter)
+            return clusters
+        num_iter += 1
+    return clusters
 
 
 if __name__ == "__main__":
-    all_files_similarites = collect_and_clean_text()
-    global FILES_SIMILARITIES
-    FILES_SIMILARITIES.update(all_files_similarites)
-    all_files_similarites = COMM.bcast(all_files_similarites, root=0)
+    collect_and_clean_text()
+    if RANK == 0: 
+        print(k_means(3, 100))
+        print("-------TIEMPO DE EJECUCION: %s SEGUNDOS -------" % (time.time()-start_time))
