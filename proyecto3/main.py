@@ -14,6 +14,9 @@ COMM = MPI.COMM_WORLD
 RANK = COMM.Get_rank()
 SIZE = COMM.Get_size()
 
+FILES_SIMILARITIES = dict()
+FILES_PATH = dict()
+
 
 def get_cosine(vec1, vec2):
     intersection = set(vec1.keys()) & set(vec2.keys())
@@ -29,18 +32,23 @@ def get_cosine(vec1, vec2):
         return 1 - (float(numerator) / denominator)
 
 
+def get_dis(text1, text2):
+    if text1 in FILES_SIMILARITIES[text2]:
+        return FILES_SIMILARITIES[text2][text1]
+    else:
+        return FILES_SIMILARITIES[text1][text2]
+
+
 def split_seq(seq, size):
     """
     Método para dividir la cantidad de archivos en la cantidad de procesadores
-    que poseemos
-    """
+    que poseemos """
     newseq = []
     splitsize = 1.0 / size * len(seq)
     for i in range(size):
         newseq.append(seq[int(round(i * splitsize))
                       :int(round((i + 1) * splitsize))])
     return newseq
-
 
 
 def collect_and_clean_text():
@@ -55,6 +63,9 @@ def collect_and_clean_text():
 
         # Conseguir las direcciones de todos los artículos en la carpeta papers
         for root, dirs, filenames in os.walk(dir_papers):
+            global FILES_PATH
+            FILES_PATH += filenames
+
             filenames = list(map(lambda x: dict({
                 'filepath': dir_papers + '/' + x,
                 'filename': x}), filenames))
@@ -99,25 +110,23 @@ def collect_and_clean_text():
         splitsize = 1.0 / SIZE * len(counted_files)
         for i in range(SIZE):
             indexStart = int(round(i * splitsize))
-            indexTop   = int(round((i + 1) * splitsize))
+            indexTop = int(round((i + 1) * splitsize))
             COMM.send((indexStart, indexTop), dest=i)
 
-    
     index = COMM.recv(source=0)
     files = COMM.bcast(counted_files, root=0)
-
 
     files_similarities = dict()
     for i in range(index[0], index[1]):
         distances = {}
-        for j in range(i+1, len(files)):
+        for j in range(i + 1, len(files)):
             similarity = get_cosine(files[i]['vector'], files[j]['vector'])
-            distances.update({files[j]['file']:similarity})
-        files_similarities.update({files[i]['file']:distances})
-    
+            distances.update({files[j]['file']: similarity})
+        files_similarities.update({files[i]['file']: distances})
+
     list_all_files_similarites = COMM.gather(files_similarities, root=0)
     if RANK == 0:
-        all_files_similarites = { }
+        all_files_similarites = {}
         for d in list_all_files_similarites:
             all_files_similarites.update(d)
         return all_files_similarites
@@ -209,9 +218,9 @@ def k_means(k, max_iter):
 
         print('Si llegué aquí, fallé. :V')
 
-    
 
 if __name__ == "__main__":
     all_files_similarites = collect_and_clean_text()
+    global FILES_SIMILARITIES
+    FILES_SIMILARITIES.update(all_files_similarites)
     all_files_similarites = COMM.bcast(all_files_similarites, root=0)
-    
