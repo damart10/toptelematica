@@ -8,8 +8,6 @@ from collections import Counter
 
 from mpi4py import MPI
 from nltk.stem import SnowballStemmer
-from time import sleep
-
 
 
 COMM = MPI.COMM_WORLD
@@ -44,7 +42,8 @@ def split_seq(seq, size):
     return newseq
 
 
-if __name__ == "__main__":
+
+def collect_and_clean_text():
     if RANK == 0:
         # Conseguir el path donde se encuentran los papers a analizar
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -98,7 +97,6 @@ if __name__ == "__main__":
     if RANK == 0:
         counted_files = [item for sublist in files for item in sublist]
         splitsize = 1.0 / SIZE * len(counted_files)
-        print(splitsize)
         for i in range(SIZE):
             indexStart = int(round(i * splitsize))
             indexTop   = int(round((i + 1) * splitsize))
@@ -106,7 +104,6 @@ if __name__ == "__main__":
 
     
     index = COMM.recv(source=0)
-    print("Soy el procesadorciito", RANK, " ", index)
     files = COMM.bcast(counted_files, root=0)
 
 
@@ -123,6 +120,98 @@ if __name__ == "__main__":
         all_files_similarites = { }
         for d in list_all_files_similarites:
             all_files_similarites.update(d)
-        print(all_files_similarites)
-    # counted_files = list(map(lambda f: Counter(f), stemmed_files))
-    # print(counted_files)
+        return all_files_similarites
+
+
+def get_clusters(centroids):
+    clusters = {}
+    for i in range(len(FILES_PATH)):
+        closestDis = {'centroid': '', 'file': '', 'dis': 1.0}
+        for j in range(len(centroids)):
+            if(FILES_PATH[i] != centroids[j]):
+                dis = get_dis(FILES_PATH[i], centroids[j])
+                if(dis < closestDis['dis']):
+                    closestDis['file'] = FILES_PATH[i]
+                    closestDis['dis'] = dis
+                    closestDis['centroid'] = centroids[j]
+            else:
+                closestDis['file'] = FILES_PATH[i]
+                closestDis['dis'] = 0
+                closestDis['centroid'] = centroids[j]
+
+        if clusters.get(closestDis['centroid']) is not None:
+            cluster = clusters[closestDis['centroid']]
+            cluster.append({closestDis['file']: closestDis['dis']})
+            clusters.update({closestDis['centroid']: cluster})
+        else:
+            cluster = [{closestDis['file']: closestDis['dis']}]
+            clusters.update({closestDis['centroid']: cluster})
+
+    return clusters
+
+
+def get_cost_clusters(clusters):
+    sum = 0
+    for cluster in clusters:
+        for i in range(len(clusters[cluster])):
+            for d in clusters[cluster][i]:
+                sum += float(clusters[cluster][i][d])
+    return sum
+
+
+def calculate_new_centroid(cluster_files):
+    min = 10000
+    centroid = ''
+    for i in range(len(cluster_files)):
+        sum = 0
+        for j in range(len(cluster_files)):
+            file1 = list(cluster_files[i].keys())[0]
+            file2 = list(cluster_files[j].keys())[0]
+            if file1 != file2:
+                dis = get_dis(file1, file2)
+            else:
+                dis = 0
+            sum += dis
+
+        if sum < min:
+            centroid = file1
+            min = sum
+
+    return centroid
+
+
+def k_means(k, max_iter):
+    if RANK == 0:
+        filepaths = list()
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        dir_papers = dir_path + '/articles'
+        for root, dirs, filenames in os.walk(dir_papers):
+            filepaths += filenames
+
+        initial_centroids = random.sample(filepaths, k)
+        clusters = get_clusters(initial_centroids)
+        cost = get_cost_clusters()
+        num_iter = 0
+        new_cost = 0
+        new_clusters = clusters
+        while num_iter < max_iter:
+            if cost > new_cost:
+                clusters = new_clusters
+                for i in clusters:
+                    new_centroids = []
+                    new_centroids.append(calculate_new_centroid(clusters[i]))
+                new_clusters = get_clusters(new_centroids)
+                new_cost = get_cost_clusters(new_clusters)
+            else:
+                return clusters
+
+            num_iter += 1
+
+        print('Si llegué aquí, fallé. :V')
+
+    
+
+if __name__ == "__main__":
+    all_files_similarites = collect_and_clean_text()
+    all_files_similarites = COMM.bcast(all_files_similarites, root=0)
+    
