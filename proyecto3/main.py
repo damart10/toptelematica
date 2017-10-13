@@ -188,7 +188,6 @@ def calculate_new_centroid(cluster_files):
         if sum < min:
             centroid = file1
             min = sum
-
     return centroid
 
 
@@ -199,24 +198,25 @@ def k_means(k, max_iter):
     num_iter = 0
     new_cost = cost
     new_clusters = clusters
-    while num_iter < max_iter:
-        if cost >= new_cost:
-            clusters = new_clusters
-            cost = new_cost
-            for i in clusters:
-                new_centroids = []
-                new_centroids.append(calculate_new_centroid(clusters[i]))
-            new_clusters = get_clusters(new_centroids)
-            new_cost = get_cost_clusters(new_clusters)
-        else:
-            print(num_iter)
-            return clusters
+    while num_iter < max_iter and cost >= new_cost:
+        clusters = new_clusters
+        cost = new_cost
+        new_centroids = []
+        for i in clusters:
+            new_unique_centroid = calculate_new_centroid(clusters[i])
+            new_centroids.append(new_unique_centroid)
+        new_clusters = get_clusters(new_centroids)
+        new_cost = get_cost_clusters(new_clusters)
+        print(new_cost, cost)
         num_iter += 1
+        if cost == new_cost and num_iter != 0:
+            print('Iteración acalcanzada', num_iter) 
+            return clusters
     return clusters
 
 
 if __name__ == "__main__":
     collect_and_clean_text()
     if RANK == 0: 
-        print(k_means(3, 100))
+        print(k_means(3, 30))
         print("-------TIEMPO DE EJECUCION: %s SEGUNDOS -------" % (time.time()-start_time))
