@@ -1,11 +1,15 @@
 #! /usr/bin/env bash
 
-export PATH="$HOME/anaconda3/bin:$PATH" 
-source activate myenv
+if [ "$(uname)" == "Darwin" ]; then
+    export PATH="$HOME/anaconda3/bin:$PATH" 
+    source activate $1
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+    source activate $1
+fi
 
-case $1 in 
+case $2 in 
 -par)
-    mpiexec -np 4 python3 main.py
+    mpiexec -np $3 python3 main.py
     ;;
 -seq)
     python3 serial.py
