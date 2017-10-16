@@ -4,18 +4,19 @@ A clustering text implementation using cosine distance for text and k-means for 
 ## How to run
 Using conda, create an environment and install all the dependencies manually:
 ```
-- mpi4py 
-- nltk
-- scipy
-- numpy
+$ conda create -n env_name python=3.6 anaconda
+$ source activate env_name
+```
+And then: 
+```
+$ pip install mpi4py
 ```
 After that you can run
 
 ```
-$ sh run.hs [env_name] -[par|seq] [number_of_cores]
+$ sh run.hs -[par|seq] [number_of_cores]
 ```
 Where: 
- * env_name is the name of the environment that you created
  * -par will run the parallel version and -seq the serial
  * number_of_cores is with how many cores you want to run the pararell version of the program, clearly with the searil version you're only use one processor 
 
