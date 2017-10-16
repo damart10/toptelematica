@@ -157,5 +157,8 @@ def k_means(k, max_iter):
 
 if __name__ == "__main__":
     collect_and_clean_text()
-    print(k_means(3, 100))
+    time_of_clean = time.time()
+    print('Tiempo del clean and collect: ', time.time() - start_time)
+    print(k_means(3, 100)) 
+    print('Tiempo k means', time.time() - time_of_clean)
     print("-------TIEMPO DE EJECUCION: %s SEGUNDOS -------" % (time.time()-start_time))

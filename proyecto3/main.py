@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import os
 import string
 import math
@@ -11,6 +8,7 @@ from collections import Counter
 from mpi4py import MPI
 from nltk.stem import SnowballStemmer
 
+
 start_time = time.time()
 
 COMM = MPI.COMM_WORLD
@@ -19,7 +17,6 @@ SIZE = COMM.Get_size()
 
 FILES_SIMILARITIES = dict()
 FILES_PATH = list()
-
 
 def get_cosine(vec1, vec2):
     intersection = set(vec1.keys()) & set(vec2.keys())
@@ -59,7 +56,6 @@ def collect_and_clean_text():
         # Conseguir el path donde se encuentran los papers a analizar
         dir_path = os.path.dirname(os.path.realpath(__file__))
         dir_papers = dir_path + '/articles'
-
         # Leyendo el archivo con stopwords
         # Necesario para limpiar los otros archivos
         stopwords = open('stopwords', 'r', encoding='latin-1').read().split()
@@ -216,7 +212,10 @@ def k_means(k, max_iter):
 
 
 if __name__ == "__main__":
-    collect_and_clean_text()
-    if RANK == 0: 
-        print(k_means(3, 30))
-        print("-------TIEMPO DE EJECUCION: %s SEGUNDOS -------" % (time.time()-start_time))
+  collect_and_clean_text()
+  if RANK == 0:
+    # print('Tiempo de clean and text: ', time.time() - start_time ) 
+     time_clean = time.time()
+     print(k_means(8, 30))
+    # print(time.time() - time_clean)
+     print("-------TIEMPO DE EJECUCION: %s SEGUNDOS -------" % (time.time()-start_time))
